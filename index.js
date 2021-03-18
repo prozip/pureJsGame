@@ -41,13 +41,12 @@ class Projectile {
     }
 }
 class Enemy {
-    constructor(x, y, radius, color, velocity, active) {
+    constructor(x, y, radius, color, velocity) {
         this.x = x
         this.y = y
         this.radius = radius
         this.color = color
         this.velocity = velocity
-        this.active = active
     }
     draw() {
         c.beginPath()
@@ -59,9 +58,6 @@ class Enemy {
         this.draw()
         this.x = this.x + this.velocity.x
         this.y = this.y + this.velocity.y
-        if (Math.abs(canvas.width / 2 - this.x) < 0.5 && Math.abs(canvas.height / 2 - this.y) < 0.5) {
-            this.active = false
-        }
     }
 }
 
@@ -78,9 +74,15 @@ const projectile = new Projectile(
 
 function spawnEnemies() {
     setInterval(() => {
-        const x = Math.random() * canvas.width
-        const y = Math.random() * canvas.height
-        const radius = 20
+        const radius = Math.random() * (30 - 4) + 4
+        let x; let y
+        if (Math.random() < 0.5) {
+            x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
+            y = Math.random() * canvas.height
+        } else {
+            x = Math.random() * canvas.width
+            y = Math.random() * 0.5 ? 0 - radius : canvas.height + radius
+        }
         const color = 'green'
         const angle = Math.atan2(canvas.height / 2 - y,
             canvas.width / 2 - x)
@@ -99,25 +101,50 @@ function animate() {
     projectiles.forEach((projectile) => {
         projectile.update()
     })
-    enemys.forEach((enemy) => {
-        if (enemy.active === true) {
-            enemy.update()
-        }
+    enemys.forEach((enemy, eIndex) => {
+        enemy.update()
+        projectiles.forEach((projectile, pIndex) => {
+            const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
+
+            // objects touch
+
+            if (dist - enemy.radius - projectile.radius < 1) {
+                setTimeout(() => {
+                    enemys.splice(eIndex, 1)
+                    projectiles.splice(pIndex, 1)
+                }, 0);
+            }
+        })
     })
 }
 
 window.addEventListener('click', (event) => {
-    const angle = Math.atan2(event.clientY - canvas.height / 2,
-        event.clientX - canvas.width / 2)
+    const angle = Math.atan2(event.clientY - player.y,
+        event.clientX - player.x)
     const velocity = {
         x: Math.cos(angle),
         y: Math.sin(angle)
     }
 
     projectiles.push(new Projectile(
-        canvas.width / 2, canvas.height / 2, 5, 'red', velocity
+        player.x, player.y, 5, 'red', velocity
     ))
 })
-
+window.addEventListener('keydown', function (event) {
+    switch (event.key) {
+        case 'w':
+            player.y = player.y - 10
+            break;
+        case 'a':
+            player.x = player.x - 10
+            break;
+        case 's':
+            player.y = player.y + 10
+            break;
+        case 'd':
+            player.x = player.x + 10
+            break;
+    }
+})
 animate()
 spawnEnemies()
