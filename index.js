@@ -5,6 +5,9 @@ const c = canvas.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
+var score = 0
+const scoreEle = document.getElementById('score');
+
 class Player {
     constructor(x, y, radius, color) {
         this.x = x
@@ -87,7 +90,7 @@ function spawnEnemies() {
             y: Math.sin(angle)
         }
         enemys.push(new Enemy(x, y, radius, color, velocity, true))
-    }, 1000)
+    }, 800)
 }
 
 let animateID
@@ -112,14 +115,14 @@ function animate() {
     enemys.forEach((enemy, eIndex) => {
         enemy.update()
 
-        //end game
+        //enemy touch player
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
         if (dist - enemy.radius - player.radius < 0.01) {
-            if (player.radius - enemy.radius / 3 < 10) {
+            if (player.radius - enemy.radius / 2 < 10) {
                 cancelAnimationFrame(animateID)
             } else {
                 gsap.to(player, {
-                    radius: player.radius - Math.round(enemy.radius / 3)
+                    radius: player.radius - Math.round(enemy.radius / 2)
                 })
                 setTimeout(() => {
                     enemys.splice(eIndex, 1)
@@ -134,8 +137,8 @@ function animate() {
 
             // projectile touch enemy
             if (dist - enemy.radius - projectile.radius < 1) {
-
-
+                score += enemy.radius
+                scoreEle.innerHTML = Math.round(score)
                 if (enemy.radius - 10 > 10) {
                     gsap.to(enemy, {
                         radius: enemy.radius - 10
