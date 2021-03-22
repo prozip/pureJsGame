@@ -25,12 +25,22 @@ class Player {
         this.radius = radius
         this.color = color
     }
+    drawBorder() {
+        let angle = (score % 500) * Math.PI * 2 / 500
+        c.beginPath()
+        c.arc(this.x, this.y, this.radius - this.radius / 13, 0, angle)
+        c.strokeStyle = "red"
+        c.lineWidth = this.radius / 6
+        c.stroke()
+    }
     draw() {
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
         c.fillStyle = this.color
         c.fill()
+        this.drawBorder()
     }
+
 }
 
 class Projectile {
@@ -67,8 +77,15 @@ class Enemy {
         c.fillStyle = this.color
         c.fill()
     }
+    drawBorder() {
+        c.beginPath()
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+        c.strokeStyle = this.color
+        c.stroke()
+    }
     update() {
         this.draw()
+        this.drawBorder()
         this.x = this.x + this.velocity.x
         this.y = this.y + this.velocity.y
     }
@@ -83,8 +100,8 @@ const enemys = []
 
 function getEnemy() {
     let ene = 1000 - Math.round(score / 2)
-    if (ene < 50) {
-        ene = 50
+    if (ene < 150) {
+        ene = 150
     }
     console.log(ene)
     return ene
@@ -141,7 +158,7 @@ function animate() {
             if (player.radius - enemy.radius / 2 < 10) {
                 cancelAnimationFrame(animateID)
                 var modal = document.getElementById('popup')
-                var scorePopup = document.getElementById('popupScore') 
+                var scorePopup = document.getElementById('popupScore')
                 modal.style.display = "block"
                 scorePopup.innerHTML = "Score: " + Math.round(score)
             } else {
@@ -213,8 +230,8 @@ window.addEventListener('keydown', function (event) {
 })
 
 setInterval(function () {
-    let newX = player.x + parseInt(Joy3.GetX()) / 12
-    let newY = player.y - parseInt(Joy3.GetY()) / 12
+    let newX = player.x + parseInt(Joy3.GetX()) / 4
+    let newY = player.y - parseInt(Joy3.GetY()) / 4
     if (newX < player.radius) {
         newX = player.radius
     } else if (newX > canvas.width) {
@@ -225,7 +242,11 @@ setInterval(function () {
     } else if (newY > canvas.height) {
         newY = canvas.height - player.radius
     }
-    player.x = newX; player.y = newY
+    // player.x = newX; player.y = newY
+    gsap.to(player, {
+        x: newX,
+        y: newY
+    })
 }, 50)
 
 setInterval(function () {
