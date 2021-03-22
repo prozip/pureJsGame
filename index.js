@@ -202,11 +202,15 @@ function animate() {
     })
 }
 
-window.addEventListener('click', (event) => {
+function playShotSound() {
     var audio = document.getElementById("audio");
     audio.pause();
     audio.currentTime = 0;
     audio.play();
+}
+
+window.addEventListener('click', (event) => {
+    playShotSound()
     const angle = Math.atan2(event.clientY - player.y,
         event.clientX - player.x)
     const velocity = {
@@ -258,6 +262,7 @@ setInterval(function () {
     let y = Joy5.GetY() * -1
 
     if (x != 0 && y != 0) {
+        playShotSound()
         let angle = Math.atan2(y, x)
         let velocity = {
             x: Math.cos(angle) * 4,
