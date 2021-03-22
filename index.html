@@ -7,41 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <script src="joy.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<style>
-    .noselect {
-        -webkit-touch-callout: none;
-        /* iOS Safari */
-        -webkit-user-select: none;
-        /* Safari */
-        -khtml-user-select: none;
-        /* Konqueror HTML */
-        -moz-user-select: none;
-        /* Firefox */
-        -ms-user-select: none;
-        /* Internet Explorer/Edge */
-        user-select: none;
-        /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-    }
-
-    body {
-        margin: 0;
-    }
-
-    label {
-        position: absolute;
-        top: 20px;
-        left: 40px;
-        color: white;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 3em;
-    }
-</style>
 
 <body>
     <canvas></canvas>
+    <div id="joy3Div" class="joy3Div"></div>
+    <div id="joy5Div" class="joy5Div"></div>
     <label id='score' class="noselect">0</label>
+    <div class="popup" id="popup">
+        <p style="text-align: center;" id="popupScore">Score</p>
+        <button style="margin-left: 35%;border-radius: 5px; border-width: 0px; background-color: gray;"
+            onclick="location.reload()"
+        >Play Again</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"
         integrity="sha512-1dalHDkG9EtcOmCnoCjiwQ/HEB5SDNqw8d4G2MKoNwjiwMNeBAkudsBCmSlMnXdsH8Bm0mOd3tl/6nL5y0bMaQ=="
         crossorigin="anonymous"></script>

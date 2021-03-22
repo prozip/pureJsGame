@@ -1,0 +1,60 @@
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                              supported by Chrome and Opera */
+}
+
+body {
+    margin: 0;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+}
+
+label {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3em;
+}
+
+.joy3Div {
+    width: 150px;
+    height: 150px;
+    margin: 0px;
+    position: fixed;
+    bottom: 10px;
+    left: 0px;
+}
+.joy5Div {
+    width: 150px;
+    height: 150px;
+    margin: 0px;
+    position: fixed;
+    bottom: 10px;
+    right: 0px;
+}
+.popup{
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    width: 300px;
+    background-color: #f57f17;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    display: none;
+}

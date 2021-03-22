@@ -8,6 +8,16 @@ canvas.height = window.innerHeight
 var score = 0
 const scoreEle = document.getElementById('score');
 
+projectileX = 0
+projectileY = 0
+
+var joy3Param = { "title": "joystick3" };
+var Joy3 = new JoyStick('joy3Div', joy3Param);
+
+var joy5Param = { "title": "joystick5" };
+var Joy5 = new JoyStick('joy5Div', joy5Param);
+console.log(Joy5)
+
 class Player {
     constructor(x, y, radius, color) {
         this.x = x
@@ -71,8 +81,17 @@ const player = new Player(x, y, 20, 'blue')
 const projectiles = []
 const enemys = []
 
+function getEnemy() {
+    let ene = 1000 - Math.round(score / 2)
+    if (ene < 50) {
+        ene = 50
+    }
+    console.log(ene)
+    return ene
+}
+
 function spawnEnemies() {
-    setInterval(() => {
+    setTimeout(() => {
         const radius = Math.random() * (30 - 4) + 4
         let x; let y
         if (Math.random() < 0.5) {
@@ -90,7 +109,8 @@ function spawnEnemies() {
             y: Math.sin(angle)
         }
         enemys.push(new Enemy(x, y, radius, color, velocity, true))
-    }, 800)
+        spawnEnemies()
+    }, getEnemy());
 }
 
 let animateID
@@ -117,9 +137,13 @@ function animate() {
 
         //enemy touch player
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
-        if (dist - enemy.radius - player.radius < 0.01) {
+        if (dist - enemy.radius - player.radius + 0.5 < 0.01) {
             if (player.radius - enemy.radius / 2 < 10) {
                 cancelAnimationFrame(animateID)
+                var modal = document.getElementById('popup')
+                var scorePopup = document.getElementById('popupScore') 
+                modal.style.display = "block"
+                scorePopup.innerHTML = "Score: " + Math.round(score)
             } else {
                 gsap.to(player, {
                     radius: player.radius - Math.round(enemy.radius / 2)
@@ -165,29 +189,15 @@ window.addEventListener('click', (event) => {
     const angle = Math.atan2(event.clientY - player.y,
         event.clientX - player.x)
     const velocity = {
-        x: Math.cos(angle) * 2,
-        y: Math.sin(angle) * 2
+        x: Math.cos(angle) * 4,
+        y: Math.sin(angle) * 4
     }
 
     projectiles.push(new Projectile(
-        player.x, player.y, 5, 'red', velocity
+        player.x, player.y, 5 + player.radius / 15, 'red', velocity
     ))
 })
 window.addEventListener('keydown', function (event) {
-    // switch (event.key) {
-    //     case 'w':
-    //         player.y = player.y - 10
-    //         break;
-    //     case 'a':
-    //         player.x = player.x - 10
-    //         break;
-    //     case 's':
-    //         player.y = player.y + 10
-    //         break;
-    //     case 'd':
-    //         player.x = player.x + 10
-    //         break;
-    // }
     if (event.key === 'w') {
         player.y = player.y - 10
     }
@@ -201,5 +211,37 @@ window.addEventListener('keydown', function (event) {
         player.x = player.x + 10
     }
 })
+
+setInterval(function () {
+    let newX = player.x + parseInt(Joy3.GetX()) / 12
+    let newY = player.y - parseInt(Joy3.GetY()) / 12
+    if (newX < player.radius) {
+        newX = player.radius
+    } else if (newX > canvas.width) {
+        newX = canvas.width - player.radius
+    }
+    if (newY < player.radius) {
+        newY = player.radius
+    } else if (newY > canvas.height) {
+        newY = canvas.height - player.radius
+    }
+    player.x = newX; player.y = newY
+}, 50)
+
+setInterval(function () {
+    let x = Joy5.GetX()
+    let y = Joy5.GetY() * -1
+
+    if (x != 0 && y != 0) {
+        let angle = Math.atan2(y, x)
+        let velocity = {
+            x: Math.cos(angle) * 4,
+            y: Math.sin(angle) * 4
+        }
+        projectiles.push(new Projectile(
+            player.x, player.y, 5 + player.radius / 15, 'red', velocity
+        ))
+    }
+}, 150);
 animate()
 spawnEnemies()
