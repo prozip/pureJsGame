@@ -203,6 +203,10 @@ function animate() {
 }
 
 window.addEventListener('click', (event) => {
+    var audio = document.getElementById("audio");
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
     const angle = Math.atan2(event.clientY - player.y,
         event.clientX - player.x)
     const velocity = {
