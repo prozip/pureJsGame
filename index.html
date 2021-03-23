@@ -12,21 +12,29 @@
 </head>
 
 <body>
+
     <canvas></canvas>
+
     <div id="joy3Div" class="joy3Div"></div>
     <div id="joy5Div" class="joy5Div"></div>
+
     <label id='score' class="noselect">0</label>
+
     <div class="popup" id="popup">
         <p style="text-align: center; font-size: 20px;" id="popupScore">Score</p>
         <button style="margin-left: 35%;border-radius: 5px; border-width: 0px; height: 30px; background-color: gray;"
             onclick="location.reload()"
         >Play Again</button>
     </div>
-    <audio id='audio' src="./AR10-7.62x51-308-Close-Single-Gunshot-A-www.fesliyanstudios.com.mp3"></audio>
+
+    <div>
+        <audio id='projectileAudio' src="./assets/sound/AR10-7.62x51-308-Close-Single-Gunshot.mp3"></audio>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"
         integrity="sha512-1dalHDkG9EtcOmCnoCjiwQ/HEB5SDNqw8d4G2MKoNwjiwMNeBAkudsBCmSlMnXdsH8Bm0mOd3tl/6nL5y0bMaQ=="
         crossorigin="anonymous"></script>
-    <script src="./index.js" type="text/javascript"></script>
+    <script src="./index.min.js" type="text/javascript"></script>
 </body>
 
 </html>
