@@ -16,14 +16,19 @@ var Joy3 = new JoyStick('joy3Div', joy3Param);
 
 var joy5Param = { "title": "joystick5" };
 var Joy5 = new JoyStick('joy5Div', joy5Param);
-console.log(Joy5)
+
+const btnObject = {
+    x: 0,
+    y: 0
+}
 
 class Player {
-    constructor(x, y, radius, color) {
+    constructor(x, y, radius, color, velocity) {
         this.x = x
         this.y = y
         this.radius = radius
         this.color = color
+        this.velocity = velocity
     }
     drawBorder() {
         let angle = (score % 500) * Math.PI * 2 / 500
@@ -39,6 +44,11 @@ class Player {
         c.fillStyle = this.color
         c.fill()
         this.drawBorder()
+    }
+    update() {
+        this.draw()
+        this.x += this.velocity.x * btnObject.x
+        this.y += this.velocity.y * btnObject.y
     }
 
 }
@@ -94,7 +104,9 @@ class Enemy {
 const x = canvas.width / 2
 const y = canvas.height / 2
 
-const player = new Player(x, y, 20, 'blue')
+const player = new Player(x, y, 20, 'blue', {
+    x: 3, y: 3
+})
 const projectiles = []
 const enemys = []
 
@@ -135,7 +147,7 @@ function animate() {
     animateID = requestAnimationFrame(animate)
     c.fillStyle = 'rgba(0,0,0,0.1)'
     c.fillRect(0, 0, canvas.width, canvas.height)
-    player.draw()
+    player.update()
 
     projectiles.forEach((projectile, index) => {
         projectile.update()
@@ -203,7 +215,7 @@ function animate() {
 }
 
 function playShotSound() {
-    var audio = document.getElementById("audio");
+    var audio = document.getElementById("projectileAudio");
     audio.pause();
     audio.currentTime = 0;
     audio.play();
@@ -222,21 +234,40 @@ window.addEventListener('click', (event) => {
         player.x, player.y, 5 + player.radius / 15, 'red', velocity
     ))
 })
+
+// player move with keyboard
 window.addEventListener('keydown', function (event) {
-    if (event.key === 'w') {
-        player.y = player.y - 10
+    if (event.key == 'w' && btnObject.y != -1) {
+        btnObject.y -= 1
     }
-    if (event.key === 'a') {
-        player.x = player.x - 10
+    if (event.key == 'a' && btnObject.x != -1) {
+        btnObject.x -= 1
     }
-    if (event.key === 's') {
-        player.y = player.y + 10
+    if (event.key == 's' && btnObject.y != 1) {
+        btnObject.y += 1
     }
-    if (event.key === 'd') {
-        player.x = player.x + 10
+    if (event.key == 'd' && btnObject.x != 1) {
+        btnObject.x += 1
+    }
+    console.log(btnObject)
+})
+window.addEventListener('keyup', function (event) {
+    if (event.key == 'w') {
+        btnObject.y += 1
+    }
+    if (event.key == 'a') {
+        btnObject.x += 1
+    }
+    if (event.key == 's') {
+        btnObject.y -= 1
+    }
+    if (event.key == 'd') {
+        btnObject.x -= 1
     }
 })
 
+
+// player move with joystick
 setInterval(function () {
     let newX = player.x + parseInt(Joy3.GetX()) / 4
     let newY = player.y - parseInt(Joy3.GetY()) / 4
@@ -257,6 +288,7 @@ setInterval(function () {
     })
 }, 50)
 
+// projectile joystick
 setInterval(function () {
     let x = Joy5.GetX()
     let y = Joy5.GetY() * -1
@@ -272,6 +304,6 @@ setInterval(function () {
             player.x, player.y, 5 + player.radius / 15, 'red', velocity
         ))
     }
-}, 150);
+}, 180);
 animate()
 spawnEnemies()
